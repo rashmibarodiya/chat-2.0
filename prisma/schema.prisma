@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,39 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  Message   Message[]
+  User      User[]    @relation("UserConversations")
+}
+
+model Message {
+  id                            Int           @id @default(autoincrement())
+  senderId                      Int
+  receiverId                    Int
+  message                       String
+  createdAt                     DateTime      @default(now())
+  updatedAt                     DateTime
+  conversationId                Int?
+  Conversation                  Conversation? @relation(fields: [conversationId], references: [id])
+  User_Message_receiverIdToUser User          @relation("Message_receiverIdToUser", fields: [receiverId], references: [id])
+  User_Message_senderIdToUser   User          @relation("Message_senderIdToUser", fields: [senderId], references: [id])
+}
+
+model User {
+  id                               Int            @id @default(autoincrement())
+  email                            String         @unique
+  username                         String?        @unique
+  password                         String?        
+  name                             String?
+  profilePic                       String?
+  createdAt                        DateTime       @default(now())
+  updatedAt                        DateTime?
+  Message_Message_receiverIdToUser Message[]      @relation("Message_receiverIdToUser")
+  Message_Message_senderIdToUser   Message[]      @relation("Message_senderIdToUser")
+  Conversation                     Conversation[] @relation("UserConversations")
 }
