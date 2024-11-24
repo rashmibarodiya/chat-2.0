@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
-
+import GoogleSignin from "@/provider/signInButton"
 
 export default function Signin() {
     const [username, setUsername] = useState("")
@@ -19,8 +19,11 @@ export default function Signin() {
     const handleSubmit = async () => {
         if (!username || !password || !email) {
             setError("Please fill the all details")
+            alert("Please fill the all details")
             return
         }
+try{
+
 
         const response = await signIn('credentials', {
             redirect: false,
@@ -37,7 +40,10 @@ export default function Signin() {
             console.log("signin failed", response?.error)
             setLoading(false)
         }
-
+    }catch(e){
+        console.log(e)
+        alert("error "+e)
+    }
 
     }
     return (
@@ -58,6 +64,10 @@ export default function Signin() {
                     className="bg-blue-500 text-white rounded-sm p-2 cursor-pointer"
                     onClick={() => handleSubmit()}
                 >Submit</button>
+                <br/>
+                or
+
+                <GoogleSignin providerId={"google"} providerName={"google"}></GoogleSignin>
             </div>
 
             {/* <Signin></Signin> */}

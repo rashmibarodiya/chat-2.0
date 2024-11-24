@@ -22,18 +22,21 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
             },
             async authorize(credentials) {
+                console.log("hi there dhfdhdkhfd",credentials)
                 if (!credentials) {
                     throw new Error("No credentials provided")
                 }
                 const { username, password, email } = credentials
                 try {
+                    console.log("try ",credentials)
                     let user = await prisma.user.findFirst({
                         where: {
                             username
                         }
                     })
+                    console.log("moye moye ",credentials)
                     if (user) {
-                        const validPassword = await bcrypt.compare(password, user.password ||"")
+                        const validPassword = await bcrypt.compare(password, user.password || "")
                         if (!validPassword) {
                             throw new Error("Incorrect Password");
                         }
@@ -43,6 +46,7 @@ export const authOptions: NextAuthOptions = {
                         }
                     }
                     else {
+                        console.log("else block",user)
                         user = await prisma.user.create({
                             data: {
                                 username,
@@ -50,13 +54,13 @@ export const authOptions: NextAuthOptions = {
                                 email
                             }
                         })
-
+console.log("user ",user)
                         return {
-                            id: user.id.toString(), name: username, email: email 
+                            id: user.id.toString(), name: username, email: email
                         }
                     }
                 } catch (e) {
-
+console.log("error ",e)
                     throw new Error("Something went wrong while authorizing : " + e)
                 }
                 // return null;
@@ -66,18 +70,27 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async signIn({ user, account, profile }) {
-            return true; // Allow sign-in
+            // let users = await prisma.user.findFirst({
+            //     where: {
+            //         username
+            //     }
+            // })
+console.log("signing ",user)
+console.log("signing ",account)
+console.log("signing ",profile)
+
+            return true; 
         },
         async redirect({ url, baseUrl }) {
             const redirectUrl = process.env.NEXTAUTH_URL || baseUrl;
             return url.startsWith(baseUrl) ? url : redirectUrl;
         },
         async session({ session, token }) {
-            console.log("session *********",session)
-            return session; 
+            console.log("session *********", session)
+            return session;
         },
         async jwt({ token, user, account }) {
-            console.log("token *********",token)
+            console.log("token *********", token)
             return token; // Return the token object
         },
     },
