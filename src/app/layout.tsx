@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import  SessionProviderWrapper  from "../provider/session";
+import  SessionProviderWrapper  from "@/provider/session";
+import Providers from "@/provider/trpcProvider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -31,7 +32,10 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <SessionProviderWrapper >
-          {children}
+            <Providers>
+            {children}
+            </Providers>
+          
           </SessionProviderWrapper>
          
         </body>
