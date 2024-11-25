@@ -22,19 +22,19 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
             },
             async authorize(credentials) {
-                console.log("hi there dhfdhdkhfd",credentials)
+                console.log("hi there dhfdhdkhfd", credentials)
                 if (!credentials) {
                     throw new Error("No credentials provided")
                 }
                 const { username, password, email } = credentials
                 try {
-                    console.log("try ",credentials)
+                    console.log("try ", credentials)
                     let user = await prisma.user.findFirst({
                         where: {
                             username
                         }
                     })
-                    console.log("moye moye ",credentials)
+                    console.log("moye moye ", credentials)
                     if (user) {
                         const validPassword = await bcrypt.compare(password, user.password || "")
                         if (!validPassword) {
@@ -46,21 +46,22 @@ export const authOptions: NextAuthOptions = {
                         }
                     }
                     else {
-                        console.log("else block",user)
+                        console.log("else block", user)
+                        const hashedPassword = await bcrypt.hash(password, 10);
                         user = await prisma.user.create({
                             data: {
                                 username,
-                                password,
+                                password: hashedPassword,
                                 email
                             }
                         })
-console.log("user ",user)
+                        console.log("user ", user)
                         return {
                             id: user.id.toString(), name: username, email: email
                         }
                     }
                 } catch (e) {
-console.log("error ",e)
+                    console.log("error ", e)
                     throw new Error("Something went wrong while authorizing : " + e)
                 }
                 // return null;
@@ -70,29 +71,52 @@ console.log("error ",e)
     ],
     callbacks: {
         async signIn({ user, account, profile }) {
-            // let users = await prisma.user.findFirst({
-            //     where: {
-            //         username
-            //     }
-            // })
-console.log("signing ",user)
-console.log("signing ",account)
-console.log("signing ",profile)
-
-            return true; 
+            if (!user || !user.email || !user.name) {
+                console.error("user or email or name missing",user)
+                return false
+            }
+            let users = await prisma.user.findFirst({
+                where: {
+                    email: user?.email || ""
+                }
+            })
+            if (users) {
+                console.log("user already exists ")
+            } else {
+                users = await prisma.user.create({
+                    data: {
+                        email: user.email,
+                        name: user.name
+                    }
+                })
+            }
+            console.log("signing ", user)
+            console.log("signing ", account)
+            console.log("signing ", profile)
+            console.log("user sign in successfully ", user)
+            return true;
         },
         async redirect({ url, baseUrl }) {
             const redirectUrl = process.env.NEXTAUTH_URL || baseUrl;
             return url.startsWith(baseUrl) ? url : redirectUrl;
         },
-        async session({ session, token }) {
-            console.log("session *********", session)
-            return session;
-        },
         async jwt({ token, user, account }) {
             console.log("token *********", token)
+            if(user){
+                token.id = user.id
+                token.name=user.name
+                token.email = user.email
+            }
             return token; // Return the token object
         },
+        async session({ session, token }) {
+            console.log("session *********", session)
+            if(token){
+                session.user = {name:token.name,email:token.email}
+            }
+            return session;
+        },
+       
     },
 
     secret: process.env.NEXTAUTH_SECRET ?? "",

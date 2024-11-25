@@ -15,6 +15,7 @@ export default function Signin() {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const router = useRouter()
+    const session = useSession()
 
     const handleSubmit = async () => {
         if (!username || !password || !email) {
@@ -50,6 +51,7 @@ try{
         <div className="items-center p-4">
 
             <div className="border p-4">
+                
                 <input className=" border" placeholder="username"
                     onChange={(e) => setUsername(e.target.value)}
                 ></input>
