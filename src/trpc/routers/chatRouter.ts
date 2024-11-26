@@ -24,7 +24,9 @@ export const chatRouter = router({
         })
     }),
     check: publicProcedure.query(() => {
-        return "hello there";
+        return {
+            msg:"hi threre"
+        };
     })
 
 })

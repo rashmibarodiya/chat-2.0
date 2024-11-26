@@ -24,7 +24,7 @@ export default function Home() {
             <p>Home</p>
             {isLoading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
-            {check && <p>{check}</p>}
+            {check && <p>{check.msg}</p>}
         </div>
     );
 }
