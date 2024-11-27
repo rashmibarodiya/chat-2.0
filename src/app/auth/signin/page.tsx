@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import GoogleSignin from "@/provider/signInButton"
+import Gender from "../checkBox/page"
 
 export default function Signin() {
     const [username, setUsername] = useState("")
@@ -48,31 +49,53 @@ try{
 
     }
     return (
-        <div className="items-center p-4">
+        <div className="flex items-center justify-center min-h-screen">
 
-            <div className="border p-4">
-                
-                <input className=" border" placeholder="username"
-                    onChange={(e) => setUsername(e.target.value)}
-                ></input>
-                <input className=" border" placeholder="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                ></input>
-                <input className=" border" placeholder="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                ></input>
+        
+        <div className="h-full items-center lg:w-1/4 bg-gray-400 rounded-md bg-clip-padding backdrop-filter
+         backdrop-blur-sm bg-opacity-10 border border-gray-100">
 
-                <button
-                    className="bg-blue-500 text-white rounded-sm p-2 cursor-pointer"
-                    onClick={() => handleSubmit()}
-                >Submit</button>
-                <br/>
-                or
+            
 
-                <GoogleSignin providerId={"google"} providerName={"google"}></GoogleSignin>
-            </div>
+           
+
+<div className="p-4 rounded-lg shadow-md max-w-sm mx-auto">
+  <h2 className="text-2xl  text-center text-white mb-6">Sign In</h2>
+
+  <input
+    className="w-full rounded-lg p-3 mb-4 text-blue-900 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="Username"
+    onChange={(e) => setUsername(e.target.value)}
+  />
+  <input
+    className="w-full rounded-lg p-3 mb-4 text-blue-900 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    type="password"
+    placeholder="Password"
+    onChange={(e) => setPassword(e.target.value)}
+  />
+  <input
+    className="w-full border rounded-lg p-3 mb-6 text-blue-900 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="Email"
+    onChange={(e) => setEmail(e.target.value)}
+  />
+<Gender/>
+  <button
+    className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-3 font-medium transition duration-300"
+    onClick={() => handleSubmit()}
+  >
+    Submit
+  </button>
+
+  <div className="text-center my-4 text-gray-800">or</div>
+
+  <GoogleSignin providerId={"google"} providerName={"google"} />
+</div>
+
 
             {/* <Signin></Signin> */}
+       
+        </div>
+
         </div>
     )
 } 

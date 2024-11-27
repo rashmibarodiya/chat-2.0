@@ -32,9 +32,11 @@ model User {
   id                               Int            @id @default(autoincrement())
   email                            String         @unique
   username                         String?        @unique
-  password                         String?        
+  password                         String?
   name                             String?
   profilePic                       String?
+  connections                      User[]         @relation("UserConnections")
+  connectedTo                      User[]         @relation("UserConnections")
   createdAt                        DateTime       @default(now())
   updatedAt                        DateTime?
   Message_Message_receiverIdToUser Message[]      @relation("Message_receiverIdToUser")

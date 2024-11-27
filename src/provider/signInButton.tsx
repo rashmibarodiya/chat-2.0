@@ -11,7 +11,9 @@ export default function GoogleSignin({ providerId, providerName }: GoogleSigninP
 
             <button
                 onClick={() => signIn(providerId)}
-                className="text-white bg-blue-500 p-4 rounded-sm ">Continue with google</button>
+                className="text-white w-full rounded-md bg-blue-500 p-3 hover:bg-blue-600 ">Continue with google</button>
         </div>
+
+        
     )
 }

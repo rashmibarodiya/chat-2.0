@@ -20,7 +20,12 @@ export const chatRouter = router({
     ).mutation(async ({ input }) => {
         try{
             const { sender, receiver, mes } = input
-
+            const res = await prisma.user.findFirst({
+                where:{
+                    id: sender
+                }
+            })
+          
             const newMsg = await prisma.message.create({
                 data: {
                     senderId: sender,
