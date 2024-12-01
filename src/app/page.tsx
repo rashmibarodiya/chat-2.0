@@ -1,42 +1,44 @@
+"use client";
 
-"use client"
-import Image from "next/image";
 import Signup from "./auth/signup/page";
 import Signin from "./auth/signin/page";
 import Dashboard from "./dashboard/page";
 import { useSession } from "next-auth/react";
+import { useSetRecoilState } from "recoil";
+import { userId, userName } from "@/state/User";
+import { trpc } from "./_trpc/client";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
+  const setUsername = useSetRecoilState(userName);
+  const setUserId = useSetRecoilState(userId);
+
+  // Use TRPC to fetch user ID based on the email
+  const { data, isLoading, error } = trpc.getId.getUsesId.useQuery(
+    { email: session?.user?.email || "" },
+    {
+      enabled: !!session?.user?.email, // Only run the query when the email exists
+    }
+  );
+
+  // Update Recoil state when session or TRPC query data changes
+  useEffect(() => {
+    if (session?.user && data?.id) {
+      setUsername(session.user.name || "");
+      setUserId(data.id); // Use the fetched ID from TRPC
+    }
+  }, [session, data, setUsername, setUserId]);
 
   return (
-    // <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16
-    //  sm:p-20 font-[family-name:var(--font-geist-sans)]">
-    //   {/* <Signin/> */}
-    // </div>
-    // <div className="relative h-full w-full bg-neutral-900">
-    //   <div className="text-white absolute inset-0 bg-fuchsia-400 bg-[size:20px_20px] opacity-20 blur-[100px]">
-    //   <Signin/>dfndskjfh
-    //     </div></div>
-
-    <div >
-      {/* bg-gradient-to-b from-gray-400 via-gray-600 to-gray-800  */}
-      {/* <div className="bg-gradient-to-r from-cyan-200 to-stone-500"> */}
-
-      {(status == "loading") ? (
-        <div></div>
-      ) : (session?.user) ? (
-        <div>
-          
-          <Dashboard />
-        </div>
-      ) : (<div>
-        <Signup/>
-        {/* <Signin></Signin> */}
-      </div>)}
-
-      {/* <Signin></Signin> */}
+    <div>
+      {status === "loading" ? (
+        <div>Loading...</div>
+      ) : session?.user ? (
+        <Dashboard />
+      ) : (
+        <Signup />
+      )}
     </div>
-
   );
 }

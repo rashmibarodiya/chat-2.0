@@ -29,16 +29,16 @@ export const authOptions: NextAuthOptions = {
                 const { username, password, email } = credentials
                 try {
                     console.log("try ", credentials)
-                    
+
                     let user = await prisma.user.findFirst({
                         where: {
                             username
                         }
                     })
-                    if(!user){
-                        user= await prisma.user.findFirst({
-                            where:{
-                                email:username
+                    if (!user) {
+                        user = await prisma.user.findFirst({
+                            where: {
+                                email: username
                             }
                         })
                     }
@@ -80,7 +80,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user, account, profile }) {
             if (!user || !user.email || !user.name) {
-                console.error("user or email or name missing",user)
+                console.error("user or email or name missing", user)
                 return false
             }
             let users = await prisma.user.findFirst({
@@ -110,21 +110,24 @@ export const authOptions: NextAuthOptions = {
         },
         async jwt({ token, user, account }) {
             console.log("token *********", token)
-            if(user){
+            if (user) {
                 token.id = user.id
-                token.name=user.name
+                token.name = user.name
                 token.email = user.email
             }
-            return token; // Return the token object
+            return token; 
         },
         async session({ session, token }) {
-            console.log("session *********", session)
-            if(token){
-                session.user = {name:token.name,email:token.email}
+            console.log("session in session*********", session)
+            console.log("token in session*********", token)
+
+            if (token) {
+            
+                session.user = { name: token.name, email: token.email }
             }
             return session;
         },
-       
+
     },
 
     secret: process.env.NEXTAUTH_SECRET ?? "",

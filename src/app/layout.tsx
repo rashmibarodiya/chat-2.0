@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import  SessionProviderWrapper  from "@/provider/session";
-import Providers from "@/provider/trpcProvider";
+import SessionProviderWrapper from "@/provider/session";
+import TrpcProviders from "@/provider/trpcProvider";
+import RecoilProvider from "@/provider/RecoilProvider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -27,19 +28,22 @@ export default function RootLayout({
 }>) {
   return (
     // <SessionProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-cyan-200 via-gray-400 to-zinc-900`}
-        >
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-cyan-200 via-gray-400 to-zinc-900`}
+      >
+       
           <SessionProviderWrapper >
-            <Providers>
-            {children}
-            </Providers>
-          
+          <RecoilProvider>
+            <TrpcProviders>
+
+              {children}
+            </TrpcProviders>
+            </RecoilProvider>
           </SessionProviderWrapper>
-         
-        </body>
-      </html>
+       
+      </body>
+    </html>
     // </SessionProvider>
   );
 }
