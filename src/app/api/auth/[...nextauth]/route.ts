@@ -29,11 +29,19 @@ export const authOptions: NextAuthOptions = {
                 const { username, password, email } = credentials
                 try {
                     console.log("try ", credentials)
+                    
                     let user = await prisma.user.findFirst({
                         where: {
                             username
                         }
                     })
+                    if(!user){
+                        user= await prisma.user.findFirst({
+                            where:{
+                                email:username
+                            }
+                        })
+                    }
                     console.log("moye moye ", credentials)
                     if (user) {
                         const validPassword = await bcrypt.compare(password, user.password || "")
@@ -42,7 +50,7 @@ export const authOptions: NextAuthOptions = {
                         }
                         console.log("authentication successfull")
                         return {
-                            id: user.id.toString(), name: username, email: email
+                            id: user.id.toString(), name: username, email: user.email
                         }
                     }
                     else {

@@ -42,4 +42,17 @@ model User {
   Message_Message_receiverIdToUser Message[]      @relation("Message_receiverIdToUser")
   Message_Message_senderIdToUser   Message[]      @relation("Message_senderIdToUser")
   Conversation                     Conversation[] @relation("UserConversations")
+  notifications                    notification[] @relation("UserNotifications")
+  connectionStatus                 String         @default("pending") // status of connection: "pending", "confirmed", "rejected"
+}
+
+model notification {
+  id                              Int             @id @default(autoincrement())
+  type                            String          // "Request" or "MsgReceive"
+  senderId                        Int
+  message                         String?         // Only for "MsgReceive" type
+  status                          String          @default("unread") // "unread", "read"
+  createdAt                       DateTime        @default(now())
+  userId                          Int             //foriegn key
+  user                            User            @relation("UserNotifications", fields: [userId], references: [id])
 }
