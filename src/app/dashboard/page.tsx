@@ -1,24 +1,42 @@
+
+"use client"
+
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { trpc } from "../_trpc/client";
 import { User, UsersSchema } from "../../types/User";
-import sendMsg from "../components/sendMsg";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { receiver, userId } from "@/state/User";
+// import sendMsg from "../components/sendMsg";
+//import { useSetRecoilState, useRecoilValue } from "recoil";
+// import { receiver, userName } from "@/state/User";
+import { useSession } from "next-auth/react";
+
 
 export default function Dashboard() {
+    // const x = useRecoilValue(userName)
+    const { data: session, status } = useSession();
     const { data: users, isLoading, error } = trpc.getAll.getUser.useQuery();
+    const { mutate } = trpc.chat.sendMsg.useMutation()
+   
     const [msg, setMsg] = useState("");
     const [userList, setUserList] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-    const id = useRecoilValue(userId); // Access Recoil state directly
+    const sendMsgHandler = async() =>{
+      const res=   mutate({
+            receiver:selectedUser?.id || 0,
+            senderMail:session?.user?.email!,
+            mes:msg
+        })
+        console.log("response recieved is ",res)
+        setMsg("")
+    }
 
     useEffect(() => {
         if (users) {
             const validatedUsers = UsersSchema.parse(users.users);
             setUserList(validatedUsers);
         }
+
     }, [users]);
 
     if (isLoading) return <div>Loading...</div>;
@@ -37,11 +55,10 @@ export default function Dashboard() {
                                     onClick={() => {
                                         setSelectedUser(user);
                                     }}
-                                    className={`cursor-pointer lg:pl-6 ${
-                                        selectedUser?.id === user.id
+                                    className={`cursor-pointer lg:pl-6 ${selectedUser?.id === user.id
                                             ? "bg-cyan-900 text-white p-3 rounded-sm"
                                             : ""
-                                    }`}
+                                        }`}
                                 >
                                     {user.name || user.username}
                                 </li>
@@ -77,14 +94,8 @@ export default function Dashboard() {
                                 ></input>
 
                                 <button
-                                    className="w-1/6 border rounded-sm"
-                                    onClick={() =>
-                                        sendMsg({
-                                            receiver: selectedUser?.id || 0,
-                                            sender: id,
-                                            msg,
-                                        })
-                                    }
+                                    className="w-1/6 border bg-cyan-800 text-white rounded-sm"
+                                    onClick={sendMsgHandler }
                                 >
                                     Send
                                 </button>

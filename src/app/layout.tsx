@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-cyan-200 via-gray-400 to-zinc-900`}
       >
-       
+        
           <SessionProviderWrapper >
           <RecoilProvider>
             <TrpcProviders>

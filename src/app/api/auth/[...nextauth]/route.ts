@@ -120,6 +120,7 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             console.log("session in session*********", session)
             console.log("token in session*********", token)
+            // const id = token.id
 
             if (token) {
             

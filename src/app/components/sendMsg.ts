@@ -3,15 +3,15 @@ import { trpc } from "../_trpc/client"
 
 interface sendMsgProp {
     receiver: number,
-    sender: number,
+    senderMail: string,
     msg: string,
 }
 
 
-export default function sendMsg({ receiver, sender, msg }: sendMsgProp) {
+export default function sendMsg({ receiver, senderMail, msg }: sendMsgProp) {
     const { mutate, isLoading, error } = trpc.chat.sendMsg.useMutation()
     const res = mutate({
-        sender,
+        senderMail,
         receiver,
         mes: msg
     })

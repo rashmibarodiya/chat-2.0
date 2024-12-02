@@ -8,7 +8,7 @@ export const chatRouter = router({
 
     sendMsg: publicProcedure.input(
         z.object({
-            sender: z.number(),
+            senderMail: z.string(),
             receiver: z.number(),
             mes: z.string().min(1, "Message can not be empty")
         })
@@ -18,32 +18,40 @@ export const chatRouter = router({
             msg: z.string()
         })
     ).mutation(async ({ input }) => {
-        try{
-            const { sender, receiver, mes } = input
+        try {
+            const { senderMail, receiver, mes } = input
             const res = await prisma.user.findFirst({
-                where:{
-                    id: sender
+                where: {
+                    email: senderMail
+                }, select: {
+                    id: true
                 }
             })
-          
+
+            if(!res){
+                return{
+                    status:500,
+                    msg:"sender not found something went wrong"
+                }
+            }
             const newMsg = await prisma.message.create({
                 data: {
-                    senderId: sender,
+                    senderId: res.id,
                     receiverId: receiver,
                     message: mes
                 }
             })
             return {
-                status:200,
-                msg:"msg sent succssfully"
+                status: 200,
+                msg: "msg sent succssfully"
             }
-        }catch(e){
-            return{
-                status:500,
-                msg: "something went wrong "+e
+        } catch (e) {
+            return {
+                status: 500,
+                msg: "something went wrong " + e
             }
         }
-        
+
     }),
     check: publicProcedure.query(() => {
         return {

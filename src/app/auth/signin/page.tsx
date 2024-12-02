@@ -47,19 +47,19 @@ export default function Signin() {
 
     }
     return (
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center p-10">
             <div className="h-full items-center lg:w-1/4 bg-gray-200 rounded-md bg-clip-padding backdrop-filter
          backdrop-blur-sm bg-opacity-40 border border-gray-100">
                 <div className="p-4 rounded-lg shadow-md max-w-sm mx-auto">
                     <h2 className="text-2xl  text-center  mb-6">Sign In</h2>
 
                     <input
-                        className="w-full rounded-lg p-3 mb-4 text-blue-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg p-3 mb-4 text-white bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Username/Email"
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <input
-                        className="w-full rounded-lg p-3 mb-4 text-blue-900 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg p-3 mb-4 text-white bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         type="password"
                         placeholder="Password"
                         onChange={(e) => setPassword(e.target.value)}
@@ -72,11 +72,11 @@ export default function Signin() {
                         Submit
                     </button>
 
-                    <div className="text-center my-4 text-gray-800">or</div>
+                    <div className="text-center my-4 border-gray-100 text-gray-800">or</div>
 
                     <GoogleSignin providerId={"google"} providerName={"google"} />
 
-                    Don't have an accont? <button className="text-blue-500 hover:scale-50"
+                    Don't have an accont? <button className="text-blue-500 hover:scale-125"
                         onClick={() => {
                             router.push("./signup")
                         }}
