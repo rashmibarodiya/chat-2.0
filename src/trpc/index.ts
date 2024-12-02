@@ -4,12 +4,17 @@ import { chatRouter } from './routers/chatRouter';
 import { number, z } from "zod"
 import { getUserRouter } from './routers/getUser';
 import{getIdRouter} from "./routers/getUserId"
+import {getConv} from "./routers/conversation/getConversationId"
+import {getConvRouter} from "./routers/conversation/getConversation"
+
+
 
 export const appRouter = router({
     chat: chatRouter,
     getAll :getUserRouter,
-    getId:getIdRouter
-
+    getId:getIdRouter,
+    getConvId:getConv,
+    getConv:getConvRouter
 })
 
 

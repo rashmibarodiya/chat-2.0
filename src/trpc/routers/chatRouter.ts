@@ -28,19 +28,48 @@ export const chatRouter = router({
                 }
             })
 
-            if(!res){
-                return{
-                    status:500,
-                    msg:"sender not found something went wrong"
+            if (!res) {
+                return {
+                    status: 500,
+                    msg: "sender not found something went wrong"
                 }
+            }
+            let conversation = await prisma.conversation.findFirst({
+                where: {
+                    User: {
+                        some: {
+                            id: res.id
+                        },
+                    },
+                    AND: {
+                        User: {
+                            some: {
+                                id: receiver
+                            }
+                        }
+                    }
+                }
+            })
+
+            if(!conversation){
+                conversation= await prisma.conversation.create({
+                    data:{
+                        User:{
+                            connect:[{id:res.id},{id:receiver}]
+                        }
+                    }
+                })
             }
             const newMsg = await prisma.message.create({
                 data: {
                     senderId: res.id,
                     receiverId: receiver,
-                    message: mes
+                    message: mes,
+                    conversationId: conversation.id
                 }
             })
+
+
             return {
                 status: 200,
                 msg: "msg sent succssfully"

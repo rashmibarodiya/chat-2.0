@@ -123,8 +123,11 @@ export const authOptions: NextAuthOptions = {
             // const id = token.id
 
             if (token) {
-            
-                session.user = { name: token.name, email: token.email }
+                session.user = {
+                    name: token.name || "",
+                    email: token.email||"",
+                    id: token.id as string 
+                };
             }
             return session;
         },

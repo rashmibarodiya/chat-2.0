@@ -1,6 +1,8 @@
+import { z } from "zod"
 
-export interface sendMsgProp {
-    receiver: number,
-    senderMail: string,
-    msg: string,
-}
+export const msgSchema = z.object({
+    senderId: z.number(),
+    receiverId: z.number(),
+    message: z.string(),
+    conversationId: z.number().nullable()
+})

@@ -8,13 +8,14 @@ import { userId, userName } from "@/state/User";
 import { trpc } from "./_trpc/client";
 import { useEffect } from "react";
 
+
+
 export default function Home() {
   const { data: session, status } = useSession();
   const setUsername = useSetRecoilState(userName);
   const setUserId = useSetRecoilState(userId);
   // const idd = typeof window !== "undefined" ? useRecoilValue(userName) : null;
 
-  // Use TRPC to fetch user ID based on the email
   const { data, isLoading, error } = trpc.getId.getUsesId.useQuery(
     { email: session?.user?.email || "" },
     {
@@ -22,13 +23,21 @@ export default function Home() {
     }
   );
 
-  // Update Recoil state when session or TRPC query data changes
+  // const{data:convId} = trpc.getConvId.getConvId.useQuery({
+
+  // })
   useEffect(() => {
     if (session?.user && data?.id) {
+      console.log("this is seession user " ,session.user)
       setUsername(session.user.name ||"abc");
       setUserId(data.id); // Use the fetched ID from TRPC
     }
   }, [session, data, setUsername, setUserId]);
+
+
+
+
+
 
   return (
     <div>
