@@ -6,13 +6,13 @@ import Navbar from "../components/Navbar";
 import { trpc } from "../_trpc/client";
 import { User, UsersSchema } from "../../types/User";
 // import sendMsg from "../components/sendMsg";
-//import { useSetRecoilState, useRecoilValue } from "recoil";
-// import { receiver, userName } from "@/state/User";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+ import { receiver, userName } from "@/state/User";
 import { useSession } from "next-auth/react";
 
 
 export default function Dashboard() {
-    // const x = useRecoilValue(userName)
+     const x = useRecoilValue(userName)
     const { data: session, status } = useSession();
     const { data: users, isLoading, error } = trpc.getAll.getUser.useQuery();
     const { mutate } = trpc.chat.sendMsg.useMutation()

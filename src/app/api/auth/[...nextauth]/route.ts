@@ -126,7 +126,7 @@ export const authOptions: NextAuthOptions = {
                 session.user = {
                     name: token.name || "",
                     email: token.email||"",
-                    id: token.id as string 
+                    // id: token.id as string 
                 };
             }
             return session;
