@@ -7,14 +7,15 @@ import{getIdRouter} from "./routers/getUserId"
 import {getConv} from "./routers/conversation/getConversationId"
 import {getConvRouter} from "./routers/conversation/getConversation"
 
-
+import { getMessageRouter } from './routers/getMsg';
 
 export const appRouter = router({
     chat: chatRouter,
     getAll :getUserRouter,
     getId:getIdRouter,
     getConvId:getConv,
-    getConv:getConvRouter
+    getConv:getConvRouter,
+    getMsgs : getMessageRouter
 })
 
 

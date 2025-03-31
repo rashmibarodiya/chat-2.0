@@ -60,7 +60,7 @@ try{
            
 
 <div className="p-4 rounded-lg shadow-md max-w-sm mx-auto">
-  <h2 className="text-2xl  text-center  mb-6">Sign In</h2>
+  <h2 className="text-2xl  text-center  mb-6">Sign Up</h2>
 
   <input
     className="w-full rounded-lg p-3 mb-4 text-blue-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"

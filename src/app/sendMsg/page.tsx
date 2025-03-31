@@ -12,10 +12,11 @@ export default function send() {
     const handleSend = async () => {
       
         mutate({
-            sender: parseInt(sender), 
+            senderMail: sender, 
             receiver: parseInt(reciever), 
             mes: msg,
         })
+        setMsg("")
     }
     return (
         <div>

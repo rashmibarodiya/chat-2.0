@@ -4,7 +4,7 @@ import { z } from "zod";
 import { msgSchema } from "@/types/Msg";
 import { Conversation } from "@/types/Conversation";
 export const getConvRouter = router({
-    getConvId: publicProcedure
+    getConv: publicProcedure
         .input(
             z.object({
                 convId: z.number()
@@ -18,7 +18,8 @@ export const getConvRouter = router({
 
             const conversation = await prisma.conversation.findFirst({
                 where: {
-                    id: convId
+                    id: convId,
+
                 }, include: {
                     Message: true
                 }

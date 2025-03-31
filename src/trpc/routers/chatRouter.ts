@@ -8,6 +8,7 @@ export const chatRouter = router({
 
     sendMsg: publicProcedure.input(
         z.object({
+            
             senderMail: z.string(),
             receiver: z.number(),
             mes: z.string().min(1, "Message can not be empty")

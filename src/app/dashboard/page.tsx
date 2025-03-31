@@ -6,28 +6,34 @@ import Navbar from "../components/Navbar";
 import { trpc } from "../_trpc/client";
 import { User, UsersSchema } from "../../types/User";
 // import sendMsg from "../components/sendMsg";
-import { useSetRecoilState, useRecoilValue } from "recoil";
- import { receiver, userName } from "@/state/User";
+// import { useSetRecoilState, useRecoilValue } from "recoil";
+import { receiver, userName } from "@/state/User";
 import { useSession } from "next-auth/react";
 
 
 export default function Dashboard() {
-     const x = useRecoilValue(userName)
+    //  const x = useRecoilValue(userName)
     const { data: session, status } = useSession();
     const { data: users, isLoading, error } = trpc.getAll.getUser.useQuery();
-    const { mutate } = trpc.chat.sendMsg.useMutation()
-   
+    const { mutate } = trpc.chat.sendMsg.useMutation();
+    const { data: userIdData } = trpc.getId.getUsesId.useQuery({ email: session?.user?.email! },
+        { enabled: !!session?.user?.email });
+
     const [msg, setMsg] = useState("");
     const [userList, setUserList] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const { data: getMessages } = trpc.getMsgs.getMsg.useQuery({ userId: userIdData?.id || 0, receiverId: selectedUser?.id || 0 })
 
-    const sendMsgHandler = async() =>{
-      const res=   mutate({
-            receiver:selectedUser?.id || 0,
-            senderMail:session?.user?.email!,
-            mes:msg
+    console.log("user is ###################### ", getMessages)
+
+
+    const sendMsgHandler = async () => {
+        const res = mutate({
+            receiver: selectedUser?.id || 0,
+            senderMail: session?.user?.email!,
+            mes: msg
         })
-        console.log("response recieved is ",res)
+        console.log("response recieved is ", res)
         setMsg("")
     }
 
@@ -49,22 +55,25 @@ export default function Dashboard() {
                 {/* List of users */}
                 <div className="w-full lg:w-1/2 h-full">
                     <ul className=" ">
-                        {userList.map((user) => (
-                            <div key={user.id}>
-                                <li
-                                    onClick={() => {
-                                        setSelectedUser(user);
-                                    }}
-                                    className={`cursor-pointer lg:pl-6 ${selectedUser?.id === user.id
+                        {userList
+                            .filter(user => user.id !== userIdData?.id)
+                            .map((user) => (
+
+                                <div key={user.id}>
+                                    <li
+                                        onClick={() => {
+                                            setSelectedUser(user);
+                                        }}
+                                        className={`cursor-pointer lg:pl-6 ${selectedUser?.id === user.id
                                             ? "bg-cyan-900 text-white p-3 rounded-sm"
                                             : ""
-                                        }`}
-                                >
-                                    {user.name || user.username}
-                                </li>
-                                <hr className="my-2 border-gray-300" />
-                            </div>
-                        ))}
+                                            }`}
+                                    >
+                                        {user.name || user.username}
+                                    </li>
+                                    <hr className="my-2 border-gray-300" />
+                                </div>
+                            ))}
                     </ul>
                 </div>
 
@@ -83,7 +92,21 @@ export default function Dashboard() {
                             {/* Spacer to push the input to the bottom */}
                             <div className="flex-grow overflow-y-auto p-4">
                                 {/* Chat messages */}
-                                <p>Chat messages will appear here...</p>
+                                <ul>
+                                    {getMessages?.msgs?.map((msg, index) => ( // Ensure safe access with optional chaining
+                                        <li 
+                                        key={index} 
+                                        className={`p-2 my-1 rounded-lg w-fit max-w-[75%] break-words ${
+                                          msg.sender === userIdData?.id 
+                                            ? "text-right bg-cyan-800 text-white ml-auto" 
+                                            : "text-left bg-cyan-600 text-black mr-auto"
+                                        }`}
+                                      >
+                                        {msg.msg}
+                                      </li>
+                                    ))}
+                                </ul>
+                              
                             </div>
 
                             <div className="flex justify-between">
@@ -95,7 +118,7 @@ export default function Dashboard() {
 
                                 <button
                                     className="w-1/6 border bg-cyan-800 text-white rounded-sm"
-                                    onClick={sendMsgHandler }
+                                    onClick={sendMsgHandler}
                                 >
                                     Send
                                 </button>
